@@ -2,7 +2,7 @@
   "name": "api-call",
   "version": "1.0.0",
   "description": "Thin wrapper around your favorite HTTP client to simplify your api calls ",
-  "main": "index.js",
+  "main": "./dist/index.js",
   "scripts": {
     "start": "npm run dev",
     "dev": "npm test -- -w",
@@ -11,7 +11,8 @@
     "prebuild": "npm run clean && npm run init",
     "build": "./node_modules/.bin/babel ./src -d ./dist --ignore test.js",
     "pretest": "npm run build",
-    "test": "./node_modules/.bin/jest"
+    "test": "./node_modules/.bin/jest",
+    "prepublish": "npm run test"
   },
   "repository": {
     "type": "git",
@@ -31,8 +32,10 @@
     "url": "https://github.com/naorye/api-call/issues"
   },
   "homepage": "https://github.com/naorye/api-call#readme",
+  "dependencies": {
+    "axios": "^0.18.0"
+  },
   "devDependencies": {
-    "axios": "^0.18.0",
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.3",
     "babel-jest": "^23.0.1",
