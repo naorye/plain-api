@@ -1,6 +1,6 @@
 import axios from 'axios';
 // import moxios from 'moxios';
-import { createResource } from './api-call';
+import { createResource } from './create-resource';
 
 describe('Api Call Test', () => {
     [

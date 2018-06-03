@@ -1,1 +1,1 @@
-export { createResource } from './api-call';
+export { createResource } from './create-resource';
