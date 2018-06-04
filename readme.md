@@ -7,7 +7,7 @@
 
 Every new project I do, I find myself heavily thinking of how to integrate api calls to my app. Should I use my favorite HTTP client directly in my business logic? Where should I store the endpoint urls? How to inject url-params? How should I prepare the input payload? Where and how should I parse the response? and many other questions.
 
-... I decided to put an end to those questions and write a thin wrapper around axios to simplify api usage and to clear my code. Plain Api is using [axios](https://github.com/axios/axios) but it is super simple to create a [superagent](https://github.com/visionmedia/superagent) / [request](https://github.com/request/request) / [fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) version of it.
+... I decided to put an end to those questions and write a thin wrapper around axios to simplify api usage and to clear my code. Plain Api is using [axios](https://github.com/axios/axios) and it is super simple to create a [superagent](https://github.com/visionmedia/superagent) / [request](https://github.com/request/request) / [fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) clone of it.
 
 
 ## Installation
@@ -104,6 +104,7 @@ function getPriceHistory(pairs = 'BTC-DOGE') {
 ```
 That's much better. Now we can focus on our business logic and not api details :) 
 
+
 ## Documentation
 
 The main method is `createResource(method, apiUrl, options)` and it expects the following:
@@ -112,20 +113,115 @@ The main method is `createResource(method, apiUrl, options)` and it expects the 
 * `options` - **[Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)** Supports `withCredentials`,
 `headersMap`, `inputMap` and `parsers`. See below for more info
 
+
 ### Url Interpolation
--complete
+
+Sometimes we need to inject parameters to the api url. For example `GET https://api.example.com/chat/5/members` will be used to get the members list of room with id equal to `5`. Let's define such resource and use it:
+```javascript
+import { createResource } from 'plain-api';
+
+const fetchChatMembers = createResource('get', 'https://api.example.com/chat/{{chatId}}/members');
+...
+...
+...
+const chatId = 5;
+const members = await fetchChatMembers.call({ chatId });
+```
+`{{chatId}}` in the url is used as a placeholer. When calling the resource with `chatId = 5`, the parameter injected into the url.   
+If we call the resource without providing the required interpolation params, the placeholders won't be replaced.
+
 
 ### withCredentials
--complete
+
+A boolean indicates whether or not cross-site requests should be made using credentials such as cookies, authorization headers or TLS client certificates. Default is `false`. You can read more [here](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/withCredentials).
+
 
 ### Headers
--complete
 
-### Payload
--complete
+`headersMap` let us to decide which parameter will be passed to the header. For example, sending a request with `X-Auth-Token` header:
+```javascript
+import { createResource } from 'plain-api';
+
+const postMessage = createResource('post', 'https://api.example.com/message', {
+    headersMap: {
+        token: 'X-Auth-Token'
+    }
+});
+...
+...
+...
+const token = 'this-is-some-user-token';
+await postMessage.call({ token });
+```
+In this example we performed a request and set the header `X-Auth-Token` with the provided token.   
+If we call the resource without providing `token`, the header won't be added.
+
+
+### Body
+
+`inputMap` is used to define the request payload. For example, if our api expects an object in the form `{ user_name, user_age, home_address }`, we will define the following resource:
+```javascript
+import { createResource } from 'plain-api';
+
+const updateUser = createResource('put', 'https://api.example.com/user', {
+    inputMap: {
+        name: 'user_name',
+        age: 'user_age',
+        address: 'home_address'
+    }
+});
+...
+...
+...
+await updateUser.call({
+    name: 'Dan',
+    age: 23,
+    address: 'Somewhere under the sea'
+});
+```
+Parameters that will not be defined in `inputMap` won't be added to the request body.   
+Input of `GET` requests is passed using query string.
+
 
 ### Parse the Response
--complete
+
+We can define `parsers` array in order to parse the response body. Each parser is a method that gets the parsed response body, a boolean indicator whether the request status code represents a failure and the original payload sent to the request.   
+For example:
+```javascript
+import { createResource } from 'plain-api';
+
+const getUser = createResource('get', 'https://api.example.com/users/{{userId}}', {
+    parsers: [
+        (data, isFailure, payload) => {
+            if (isFailure) {
+                throw new Error(`Fail to call api with userId equals to ${payload.userId}`);
+            }
+            return data.profile;
+        },
+        profile => {
+            name: profile.user_name,
+            age: profile.user_age,
+            address: profile.home_address
+        }
+    ]
+});
+...
+...
+...
+try {
+    const user = await getUser.call({ userId: 12 });
+    console.log(`Name: ${user.name}, Age: ${user.age}, Address: ${user.address}`);
+} catch (err) {
+    console.log(`Request failed: ${err.message}`);
+}
+```
+In this example we provide dtwo parsers. If the request failed (status code different from 2xx), the first parser will throw an error. Otherwise it will return the user profile which will be parsed by the second parser.
+
+### Errors handling
+
+* If an api call respond with 2xx status code, everything is fine and no error will be thrown.   
+* If an api call respond with failure status code and contains a response (there was a host that got the request and sent a response), no error will be thrown but the parsers will get `true` value in `isFailure`. In this case a parser can decide to throw an error which will be propagate to the api caller.
+* If an api call respond with failure status code and doesn't contain a response (there was nobody on the other side, no handler / no server / no internet connection / ... no response), an error will be thrown and no parser will be called.
 
 ## Tests
 
