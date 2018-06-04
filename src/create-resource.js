@@ -15,9 +15,9 @@ function invokeParsers(parsers = [], body, isFailure, payload) {
     return parsedBody;
 }
 
-export function createResource(method, apiUrl, url, options = {}) {
+export function createResource(method, apiUrl, options = {}) {
     function buildUrl(urlParams = {}) {
-        return url.replace(INTERPOLATION_PATTERN, (match, p1) =>
+        return apiUrl.replace(INTERPOLATION_PATTERN, (match, p1) =>
             (
                 Object.prototype.hasOwnProperty.call(urlParams, p1) ?
                     encodeURIComponent(urlParams[p1]) :
@@ -25,13 +25,9 @@ export function createResource(method, apiUrl, url, options = {}) {
             ));
     }
 
-    function getFullUrl(urlParams = {}) {
-        return apiUrl + buildUrl(urlParams);
-    }
-
     function getProperties() {
         return {
-            apiUrl, method, url, options,
+            apiUrl, method, options,
         };
     }
 
@@ -64,7 +60,7 @@ export function createResource(method, apiUrl, url, options = {}) {
     }
 
     async function call(payload = undefined) {
-        const fullUrl = getFullUrl(payload);
+        const fullUrl = buildUrl(payload);
         const transformedPayload = getTransformedPayload(payload);
         const headers = getHeaders(payload);
 
@@ -114,6 +110,6 @@ export function createResource(method, apiUrl, url, options = {}) {
     }
 
     return {
-        buildUrl, getFullUrl, call, getProperties,
+        buildUrl, call, getProperties,
     };
 }

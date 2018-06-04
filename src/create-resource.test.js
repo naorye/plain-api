@@ -8,14 +8,14 @@ describe('Api Call Test', () => {
         {
             method: 'get',
             name: 'should perform simple GET request',
-            createResource: () => createResource('get', 'http://example.com', '/some/api/'),
+            createResource: () => createResource('get', 'http://example.com/some/api/'),
             expectedArguments: [ 'http://example.com/some/api/', {} ],
 
         },
         {
             method: 'get',
             name: 'should perform GET request with params',
-            createResource: () => createResource('get', 'http://example.com', '/some/api/', {
+            createResource: () => createResource('get', 'http://example.com/some/api/', {
                 inputMap: {
                     a: 'A',
                     b: 'B',
@@ -28,7 +28,7 @@ describe('Api Call Test', () => {
         {
             method: 'get',
             name: 'should perform GET request only with provided params defined in inputMap',
-            createResource: () => createResource('get', 'http://example.com', '/some/api/', {
+            createResource: () => createResource('get', 'http://example.com/some/api/', {
                 inputMap: {
                     a: 'A',
                     b: 'B',
@@ -42,14 +42,14 @@ describe('Api Call Test', () => {
         {
             method: 'post',
             name: 'should perform simple POST request',
-            createResource: () => createResource('post', 'http://example.com', '/some/api/'),
+            createResource: () => createResource('post', 'http://example.com/some/api/'),
             expectedArguments: [ 'http://example.com/some/api/', undefined, {} ],
 
         },
         {
             method: 'post',
             name: 'should perform POST request with params',
-            createResource: () => createResource('post', 'http://example.com', '/some/api/', {
+            createResource: () => createResource('post', 'http://example.com/some/api/', {
                 inputMap: {
                     a: 'A',
                     b: 'B',
@@ -62,7 +62,7 @@ describe('Api Call Test', () => {
         {
             method: 'post',
             name: 'should perform POST request only with provided params defined in inputMap',
-            createResource: () => createResource('post', 'http://example.com', '/some/api/', {
+            createResource: () => createResource('post', 'http://example.com/some/api/', {
                 inputMap: {
                     a: 'A',
                     b: 'B',
@@ -76,14 +76,14 @@ describe('Api Call Test', () => {
         {
             method: 'put',
             name: 'should perform simple PUT request',
-            createResource: () => createResource('put', 'http://example.com', '/some/api/'),
+            createResource: () => createResource('put', 'http://example.com/some/api/'),
             expectedArguments: [ 'http://example.com/some/api/', undefined, {} ],
 
         },
         {
             method: 'put',
             name: 'should perform PUT request with params',
-            createResource: () => createResource('put', 'http://example.com', '/some/api/', {
+            createResource: () => createResource('put', 'http://example.com/some/api/', {
                 inputMap: {
                     a: 'A',
                     b: 'B',
@@ -96,7 +96,7 @@ describe('Api Call Test', () => {
         {
             method: 'put',
             name: 'should perform PUT request only with provided params defined in inputMap',
-            createResource: () => createResource('put', 'http://example.com', '/some/api/', {
+            createResource: () => createResource('put', 'http://example.com/some/api/', {
                 inputMap: {
                     a: 'A',
                     b: 'B',
@@ -110,14 +110,14 @@ describe('Api Call Test', () => {
         {
             method: 'delete',
             name: 'should perform simple DELETE request',
-            createResource: () => createResource('delete', 'http://example.com', '/some/api/'),
+            createResource: () => createResource('delete', 'http://example.com/some/api/'),
             expectedArguments: [ 'http://example.com/some/api/', {} ],
 
         },
         {
             method: 'delete',
             name: 'should perform DELETE request without params, even if they were declared',
-            createResource: () => createResource('delete', 'http://example.com', '/some/api/', {
+            createResource: () => createResource('delete', 'http://example.com/some/api/', {
                 inputMap: {
                     a: 'A',
                     b: 'B',
@@ -132,14 +132,14 @@ describe('Api Call Test', () => {
         {
             method: 'get',
             name: 'should support withCredentials option',
-            createResource: () => createResource('get', 'http://example.com', '/some/api/', { withCredentials: true }),
+            createResource: () => createResource('get', 'http://example.com/some/api/', { withCredentials: true }),
             expectedArguments: [ 'http://example.com/some/api/', { withCredentials: true } ],
 
         },
         {
             method: 'get',
             name: 'should support headers option according to headersMap',
-            createResource: () => createResource('get', 'http://example.com', '/some/api/', {
+            createResource: () => createResource('get', 'http://example.com/some/api/', {
                 headersMap: {
                     token: 'x-token',
                     param: 'x-param',
@@ -152,7 +152,7 @@ describe('Api Call Test', () => {
         {
             method: 'get',
             name: 'should support interpolation',
-            createResource: () => createResource('get', 'http://example.com', '/some/api/{{id1}}/{{id2}}/id3'),
+            createResource: () => createResource('get', 'http://example.com/some/api/{{id1}}/{{id2}}/id3'),
             payload: { id1: '1', id2: 2, id3: 3 },
             expectedArguments: [ 'http://example.com/some/api/1/2/id3', {} ],
 
@@ -160,14 +160,14 @@ describe('Api Call Test', () => {
         {
             method: 'get',
             name: 'should unchange url if interpolation parameter wasn\'t provided',
-            createResource: () => createResource('get', 'http://example.com', '/some/api/{{id1}}/{{id2}}/id3'),
+            createResource: () => createResource('get', 'http://example.com/some/api/{{id1}}/{{id2}}/id3'),
             expectedArguments: [ 'http://example.com/some/api/{{id1}}/{{id2}}/id3', {} ],
 
         },
         {
             method: 'get',
             name: 'should support chaining response parsers',
-            createResource: () => createResource('get', 'http://example.com', '/some/api/', {
+            createResource: () => createResource('get', 'http://example.com/some/api/', {
                 parsers: [
                     data => data.a,
                     data => data.b,
@@ -199,7 +199,7 @@ describe('Api Call Test', () => {
 
     it('should throw and error when invalid method is used', async () => {
         let errorMessage;
-        const resource = createResource('bla', 'http://example.com', '/some/api/');
+        const resource = createResource('bla', 'http://example.com/some/api/');
         try {
             await resource.call();
         } catch (err) {
