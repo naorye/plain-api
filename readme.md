@@ -65,7 +65,7 @@ export const fetchPriceHistory = createResource('get', 'https://bittrex.com/api/
     inputMap: {
         pairs: 'market'
     },
-    parsers: {
+    parsers: [
         data => {
             if (!data.success) {
                 throw new Error(data.message);
@@ -77,7 +77,7 @@ export const fetchPriceHistory = createResource('get', 'https://bittrex.com/api/
             price: item.Price,
             timestamp: item.TimeStamp,
         }))
-    }
+    ]
 })
 ```
 And now use it:
