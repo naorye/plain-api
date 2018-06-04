@@ -1,0 +1,14 @@
+{
+  "name": "plain-api-example",
+  "version": "1.0.0",
+  "description": "Plain-Api usage example",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "plain-api": "0.0.2"
+  }
+}
