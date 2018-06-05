@@ -4,7 +4,7 @@
 [![NPM Version][npm-image]][npm-url]
 [![Build Status][travis-image]][travis-url]
 [![Coverage Status][coveralls-image]][coveralls-url]
-[![Downloads Stats][npm-downloads]][npm-url]
+<!-- [![Downloads Stats][npm-downloads]][npm-url] -->
 
 Every new project I do, I find myself heavily thinking of how to integrate api calls to my app. Should I use my favorite HTTP client directly in my business logic? Where should I store the endpoint urls? How to inject url-params? How should I prepare the input payload? Where and how should I parse the response? and many other questions.
 
