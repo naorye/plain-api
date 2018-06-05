@@ -11,8 +11,9 @@
     "prebuild": "npm run clean && npm run init",
     "build": "./node_modules/.bin/babel ./src -d ./dist --ignore test.js",
     "pretest": "npm run build",
-    "test": "./node_modules/.bin/jest",
-    "prepublish": "npm run test"
+    "test": "./node_modules/.bin/jest --coverage",
+    "prepublish": "npm run test",
+    "coveralls": "cat coverage/lcov.info | ./node_modules/.bin/coveralls"
   },
   "repository": {
     "type": "git",
@@ -44,6 +45,7 @@
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-es2017": "^6.24.1",
     "babel-preset-stage-0": "^6.24.1",
+    "coveralls": "^3.0.1",
     "jest": "^23.1.0"
   },
   "files": [

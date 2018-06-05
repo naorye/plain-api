@@ -3,6 +3,7 @@
 
 [![NPM Version][npm-image]][npm-url]
 [![Build Status][travis-image]][travis-url]
+[![Coverage Status][coveralls-image]][coveralls-url]
 [![Downloads Stats][npm-downloads]][npm-url]
 
 Every new project I do, I find myself heavily thinking of how to integrate api calls to my app. Should I use my favorite HTTP client directly in my business logic? Where should I store the endpoint urls? How to inject url-params? How should I prepare the input payload? Where and how should I parse the response? and many other questions.
@@ -258,3 +259,5 @@ Distributed under the MIT license. See ``LICENSE`` for more information.
 [npm-downloads]: https://img.shields.io/npm/dm/plain-api.svg?style=flat-square
 [travis-image]: https://img.shields.io/travis/naorye/plain-api/master.svg?style=flat-square
 [travis-url]: https://travis-ci.org/naorye/plain-api
+[coveralls-image]: https://img.shields.io/coveralls/naorye/plain-api.svg?style=flat-square
+[coveralls-url]: https://coveralls.io/github/naorye/plain-api?branch=master
