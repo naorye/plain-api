@@ -111,8 +111,7 @@ That's much better. Now we can focus on our business logic and not api details :
 The main method is `createResource(method, apiUrl, options)` and it expects the following:
 * `method` **[String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** Can be one of `post`, `put`, `get` or `delete`
 * `apiUrl` **[String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** Api url (for example: `https://bittrex.com/api/v1.1/public/getmarkethistory`). See below for more info
-* `options` - **[Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)** Supports `withCredentials`,
-`headersMap`, `inputMap` and `parsers`. See below for more info
+* `options` - **[Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)** Supports `withCredentials`, `interpolationPattern`, `headersMap`, `inputMap` and `parsers`. See below for more info
 
 
 ### Url Interpolation
@@ -131,6 +130,36 @@ const members = await fetchChatMembers.call({ chatId });
 `{{chatId}}` in the url is used as a placeholer. When calling the resource with `chatId = 5`, the parameter injected into the url.   
 If we call the resource without providing the required interpolation params, the placeholders won't be replaced.
 
+### Changing Interpolation Pattern
+
+As a default, the regular expression that is used for injecting url parameters is `/\{\{(\w+)\}\}/gi` (which matches to all the wordes wraped with `{{}}`). You can override this default by calling `setDefaultInterpolationPattern(pattern)`:   
+```javascript
+import { createResource, setDefaultInterpolationPattern } from 'plain-api';
+
+setDefaultInterpolationPattern(/\:(\w+)/gi);
+...
+...
+const fetchChatMembers = createResource('get', 'https://api.example.com/chat/:chatId/members');
+...
+...
+const chatId = 5;
+const members = await fetchChatMembers.call({ chatId });
+```
+Now `:chatId` will be replaced with `5`.
+
+Other option to override the interpolation pattern for specific resource is to provide it as an option when creating the resource:
+```javascript
+import { createResource } from 'plain-api';
+
+const fetchChatMembers = createResource('get', 'https://api.example.com/chat/:chatId/members', {
+    interpolationPattern:/\:(\w+)/gi
+});
+...
+...
+const chatId = 5;
+const members = await fetchChatMembers.call({ chatId });
+```
+This will override the default interpolation pattern only for that specified resource.
 
 ### withCredentials
 
