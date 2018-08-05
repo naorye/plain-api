@@ -132,7 +132,7 @@ If we call the resource without providing the required interpolation params, the
 
 ### Changing Interpolation Pattern
 
-As a default, the regular expression that is used for injecting url parameters is `/\{\{(\w+)\}\}/gi` (which matches to all the wordes wraped with `{{}}`). You can override this default by calling `setDefaultInterpolationPattern(pattern)`:   
+As a default, the regular expression that is used for injecting url parameters is `/\{\{(\w+)\}\}/gi` (which matches to all the wordes wraped inside `{{}}`). You can override this default by calling `setDefaultInterpolationPattern(pattern)`:   
 ```javascript
 import { createResource, setDefaultInterpolationPattern } from 'plain-api';
 
@@ -147,7 +147,7 @@ const members = await fetchChatMembers.call({ chatId });
 ```
 Now `:chatId` will be replaced with `5`.
 
-Other option to override the interpolation pattern for specific resource is to provide it as an option when creating the resource:
+Other option to override the interpolation pattern for a specific resource is to provide it as an option when creating the resource:
 ```javascript
 import { createResource } from 'plain-api';
 
