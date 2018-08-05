@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const INTERPOLATION_PATTERN = /\{\{(\w+)\}\}/gi;
+let defaultInterpolationPattern = /\{\{(\w+)\}\}/gi;
 
 function invokeParsers(parsers = [], body, isFailure, payload) {
     let parsersArr;
@@ -15,9 +15,14 @@ function invokeParsers(parsers = [], body, isFailure, payload) {
     return parsedBody;
 }
 
+export function setDefaultInterpolationPattern(interpolationPattern) {
+    defaultInterpolationPattern = interpolationPattern;
+}
+
 export function createResource(method, apiUrl, options = {}) {
     function buildUrl(urlParams = {}) {
-        return apiUrl.replace(INTERPOLATION_PATTERN, (match, p1) =>
+        const interpolationPattern = options.interpolationPattern || defaultInterpolationPattern;
+        return apiUrl.replace(interpolationPattern, (match, p1) =>
             (
                 Object.prototype.hasOwnProperty.call(urlParams, p1) ?
                     encodeURIComponent(urlParams[p1]) :

@@ -1,6 +1,6 @@
 import axios from 'axios';
 // import moxios from 'moxios';
-import { createResource } from './create-resource';
+import { createResource, setDefaultInterpolationPattern } from './create-resource';
 
 describe('Api Call Test', () => {
     [
@@ -164,6 +164,27 @@ describe('Api Call Test', () => {
             expectedArguments: [ 'http://example.com/some/api/{{id1}}/{{id2}}/id3', {} ],
 
         },
+        {
+            method: 'get',
+            name: 'should support custom interpolation pattern',
+            createResource: () => createResource('get', 'http://example.com/some/api/:id1/:id2/id3', {
+                interpolationPattern: /\:(\w+)/gi,
+            }),
+            payload: { id1: '1', id2: 2, id3: 3 },
+            expectedArguments: [ 'http://example.com/some/api/1/2/id3', {} ],
+        },
+
+        {
+            method: 'get',
+            name: 'should support custom interpolation pattern via default definition',
+            createResource: () => {
+                setDefaultInterpolationPattern(/\:(\w+)/gi);
+                return createResource('get', 'http://example.com/some/api/:id1/:id2/id3');
+            },
+            payload: { id1: '1', id2: 2, id3: 3 },
+            expectedArguments: [ 'http://example.com/some/api/1/2/id3', {} ],
+        },
+
         {
             method: 'get',
             name: 'should support chaining response parsers',
