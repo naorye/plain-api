@@ -152,7 +152,7 @@ Other option to override the interpolation pattern for a specific resource is to
 import { createResource } from 'plain-api';
 
 const fetchChatMembers = createResource('get', 'https://api.example.com/chat/:chatId/members', {
-    interpolationPattern:/\:(\w+)/gi
+    interpolationPattern: /\:(\w+)/gi
 });
 ...
 ...
