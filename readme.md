@@ -263,6 +263,9 @@ npm test
 
 ## Release History
 
+* 1.0.3
+    * Add support for setting and changing interpolation pattern
+    * Bug fixes
 * 1.0.0
     * First stable tested version
 
