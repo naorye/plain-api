@@ -1,49 +1,63 @@
 import axios from 'axios';
 
-let defaultInterpolationPattern = /\{\{(\w+)\}\}/gi;
+const defaultOptions = {
+    interpolationPattern: /\{\{(\w+)\}\}/gi,
+    inputMap: undefined,
+    headersMap: undefined,
+    withCredentials: false,
+    parsers: [],
+};
 
 function invokeParsers(parsers = [], body, isFailure, payload) {
     let parsersArr;
     if (!Array.isArray(parsers)) {
-        parsersArr = [ parsers ];
+        parsersArr = [parsers];
     } else {
         parsersArr = parsers;
     }
     const originalBody = Object.freeze(body);
-    const parsedBody = parsersArr.reduce((interBody, parser) =>
-        parser(interBody, isFailure, payload), originalBody);
+    const parsedBody = parsersArr.reduce(
+        (interBody, parser) => parser(interBody, isFailure, payload),
+        originalBody
+    );
     return parsedBody;
 }
 
 export function setDefaultInterpolationPattern(interpolationPattern) {
-    defaultInterpolationPattern = interpolationPattern;
+    defaultOptions.interpolationPattern = interpolationPattern;
 }
 
 export function createResource(method, apiUrl, options = {}) {
+    const expandedOptions = { ...defaultOptions, ...options };
+
     function buildUrl(urlParams = {}) {
-        const interpolationPattern = options.interpolationPattern || defaultInterpolationPattern;
+        const { interpolationPattern } = expandedOptions;
         return apiUrl.replace(interpolationPattern, (match, p1) =>
-            (
-                Object.prototype.hasOwnProperty.call(urlParams, p1) ?
-                    encodeURIComponent(urlParams[p1]) :
-                    match
-            ));
+            Object.prototype.hasOwnProperty.call(urlParams, p1)
+                ? encodeURIComponent(urlParams[p1])
+                : match
+        );
     }
 
     function getProperties() {
         return {
-            apiUrl, method, options,
+            apiUrl,
+            method,
+            options: expandedOptions,
         };
     }
 
     function getTransformedPayload(payload) {
-        const { inputMap } = options;
+        const { inputMap } = expandedOptions;
         let transformedPayload;
         if (inputMap && payload) {
-            transformedPayload = Object.keys(inputMap).reduce((data, key) => ({
-                ...data,
-                [inputMap[key]]: payload[key],
-            }), {});
+            transformedPayload = Object.keys(inputMap).reduce(
+                (data, key) => ({
+                    ...data,
+                    [inputMap[key]]: payload[key],
+                }),
+                {}
+            );
         } else {
             transformedPayload = undefined;
         }
@@ -51,13 +65,16 @@ export function createResource(method, apiUrl, options = {}) {
     }
 
     function getHeaders(payload) {
-        const { headersMap } = options;
+        const { headersMap } = expandedOptions;
         let headers;
         if (headersMap && payload) {
-            headers = Object.keys(headersMap).reduce((data, key) => ({
-                ...data,
-                [headersMap[key]]: payload[key],
-            }), {});
+            headers = Object.keys(headersMap).reduce(
+                (data, key) => ({
+                    ...data,
+                    [headersMap[key]]: payload[key],
+                }),
+                {}
+            );
         } else {
             headers = undefined;
         }
@@ -69,8 +86,8 @@ export function createResource(method, apiUrl, options = {}) {
         const transformedPayload = getTransformedPayload(payload);
         const headers = getHeaders(payload);
 
-        const { withCredentials, parsers } = options;
-        const axiosOptions = { };
+        const { withCredentials, parsers } = expandedOptions;
+        const axiosOptions = {};
         if (headers) {
             axiosOptions.headers = headers;
         }
@@ -115,6 +132,8 @@ export function createResource(method, apiUrl, options = {}) {
     }
 
     return {
-        buildUrl, call, getProperties,
+        buildUrl,
+        call,
+        getProperties,
     };
 }
