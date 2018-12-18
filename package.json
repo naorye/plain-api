@@ -1,54 +1,54 @@
 {
-  "name": "plain-api",
-  "version": "1.0.3",
-  "description": "Thin wrapper around your favorite HTTP client to simplify your api calls",
-  "main": "./dist/index.js",
-  "scripts": {
-    "start": "npm run dev",
-    "dev": "npm test -- -w",
-    "init": "mkdir dist",
-    "clean": "rm -rf dist",
-    "prebuild": "npm run clean && npm run init",
-    "build": "./node_modules/.bin/babel ./src -d ./dist --ignore test.js",
-    "pretest": "npm run build",
-    "test": "./node_modules/.bin/jest --coverage",
-    "prepublish": "npm run test",
-    "coveralls": "cat coverage/lcov.info | ./node_modules/.bin/coveralls"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/naorye/plain-api.git"
-  },
-  "keywords": [
-    "api",
-    "request",
-    "axios",
-    "superagent",
-    "fetch",
-    "resource"
-  ],
-  "author": "NaorYe",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/naorye/plain-api/issues"
-  },
-  "homepage": "https://github.com/naorye/plain-api#readme",
-  "dependencies": {
-    "axios": "^0.18.0",
-    "babel-runtime": "^6.26.0"
-  },
-  "devDependencies": {
-    "babel-cli": "^6.26.0",
-    "babel-core": "^6.26.3",
-    "babel-jest": "^23.6.0",
-    "babel-plugin-transform-runtime": "^6.23.0",
-    "babel-preset-es2015": "^6.24.1",
-    "babel-preset-es2017": "^6.24.1",
-    "babel-preset-stage-0": "^6.24.1",
-    "coveralls": "^3.0.2",
-    "jest": "^23.6.0"
-  },
-  "files": [
-    "dist"
-  ]
+    "name": "plain-api",
+    "version": "1.0.4",
+    "description": "Thin wrapper around your favorite HTTP client to simplify your api calls",
+    "main": "./dist/index.js",
+    "scripts": {
+        "start": "npm run dev",
+        "dev": "npm test -- -w",
+        "init": "mkdir dist",
+        "clean": "rm -rf dist",
+        "prebuild": "npm run clean && npm run init",
+        "build": "./node_modules/.bin/babel ./src -d ./dist --ignore test.js",
+        "pretest": "npm run build",
+        "test": "./node_modules/.bin/jest --coverage",
+        "prepublish": "npm run test",
+        "coveralls": "cat coverage/lcov.info | ./node_modules/.bin/coveralls"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/naorye/plain-api.git"
+    },
+    "keywords": [
+        "api",
+        "request",
+        "axios",
+        "superagent",
+        "fetch",
+        "resource"
+    ],
+    "author": "NaorYe",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/naorye/plain-api/issues"
+    },
+    "homepage": "https://github.com/naorye/plain-api#readme",
+    "dependencies": {
+        "axios": "^0.18.0",
+        "babel-runtime": "^6.26.0"
+    },
+    "devDependencies": {
+        "babel-cli": "^6.26.0",
+        "babel-core": "^6.26.3",
+        "babel-jest": "^23.6.0",
+        "babel-plugin-transform-runtime": "^6.23.0",
+        "babel-preset-es2015": "^6.24.1",
+        "babel-preset-es2017": "^6.24.1",
+        "babel-preset-stage-0": "^6.24.1",
+        "coveralls": "^3.0.2",
+        "jest": "^23.6.0"
+    },
+    "files": [
+        "dist"
+    ]
 }
