@@ -8,7 +8,7 @@ const defaultOptions = {
     parsers: [],
 };
 
-function invokeParsers(parsers = [], body, isFailure, payload) {
+function invokeParsers(parsers = [], body, isFailure, payload, options) {
     let parsersArr;
     if (!Array.isArray(parsers)) {
         parsersArr = [parsers];
@@ -17,7 +17,7 @@ function invokeParsers(parsers = [], body, isFailure, payload) {
     }
     const originalBody = Object.freeze(body);
     const parsedBody = parsersArr.reduce(
-        (interBody, parser) => parser(interBody, isFailure, payload),
+        (interBody, parser) => parser(interBody, isFailure, payload, options),
         originalBody
     );
     return parsedBody;
@@ -128,7 +128,7 @@ export function createResource(method, apiUrl, options = {}) {
             }
         }
 
-        return invokeParsers(parsers, body, isFailure, payload);
+        return invokeParsers(parsers, body, isFailure, payload, expandedOptions);
     }
 
     return {
