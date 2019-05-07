@@ -1,1 +1,1 @@
-export { createResource } from './create-resource';
+export { createResource, createResourceFactory } from './create-resource';
