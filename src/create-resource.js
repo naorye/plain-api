@@ -2,6 +2,7 @@ import axios from 'axios';
 
 const defaultOptions = {
     interpolationPattern: /\{\{(\w+)\}\}/gi,
+    transformPayload: p => p,
     inputMap: undefined,
     headersMap: undefined,
     withCredentials: false,
@@ -48,7 +49,7 @@ export function createResource(method, apiUrl, options = {}) {
     }
 
     function getTransformedPayload(payload) {
-        const { inputMap } = expandedOptions;
+        const { inputMap, transformPayload } = expandedOptions;
         let transformedPayload;
         if (inputMap && payload) {
             transformedPayload = Object.keys(inputMap).reduce(
@@ -61,6 +62,7 @@ export function createResource(method, apiUrl, options = {}) {
         } else {
             transformedPayload = undefined;
         }
+        transformedPayload = transformPayload(transformedPayload);
         return transformedPayload;
     }
 

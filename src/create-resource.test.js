@@ -176,7 +176,6 @@ describe('Api Call Test', () => {
             payload: { id1: '1', id2: 2, id3: 3 },
             expectedArguments: ['http://example.com/some/api/1/2/id3', {}],
         },
-
         {
             method: 'get',
             name: 'should support custom interpolation pattern via default definition',
@@ -187,7 +186,6 @@ describe('Api Call Test', () => {
             payload: { id1: '1', id2: 2, id3: 3 },
             expectedArguments: ['http://example.com/some/api/1/2/id3', {}],
         },
-
         {
             method: 'get',
             name: 'should support chaining response parsers',
@@ -198,6 +196,20 @@ describe('Api Call Test', () => {
             mockResponse: { data: { a: { b: { c: 2 } } } },
             expectedArguments: ['http://example.com/some/api/', {}],
             expectedResult: 2,
+        },
+        {
+            method: 'get',
+            name: 'should support transformPayload option',
+            createResource: () =>
+                createResource('get', 'http://example.com/some/api/', {
+                    inputMap: {
+                        a: 'A',
+                        b: 'B',
+                    },
+                    transformPayload: payload => ({ ...payload, B: 3, C: 4 }),
+                }),
+            payload: { a: 1, B: 2 },
+            expectedArguments: ['http://example.com/some/api/', { params: { A: 1, B: 3, C: 4 } }],
         },
     ].forEach(test => {
         it(test.name, async () => {
