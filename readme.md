@@ -111,7 +111,7 @@ That's much better. Now we can focus on our business logic and not api details :
 The main method is `createResource(method, apiUrl, options)` and it expects the following:
 * `method` **[String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** Can be one of `post`, `put`, `get` or `delete`
 * `apiUrl` **[String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** Api url (for example: `https://bittrex.com/api/v1.1/public/getmarkethistory`). See below for more info
-* `options` - **[Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)** Supports `withCredentials`, `interpolationPattern`, `headersMap`, `inputMap` and `parsers`. See below for more info
+* `options` - **[Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)** Supports `withCredentials`, `interpolationPattern`, `headersMap`, `inputMap`, `transformPayload` and `parsers`. See below for more info
 
 
 ### Url Interpolation
@@ -212,6 +212,28 @@ await updateUser.call({
 Parameters that will not be defined in `inputMap` won't be added to the request body.   
 Input of `GET` requests is passed using query string.
 
+## Manipulate request payload
+
+`transformPayload` option can be used to manipulated payload right before calling the api. 
+```javascript
+import { createResource } from 'plain-api';
+
+const updateUser = createResource('put', 'https://api.example.com/user', {
+    inputMap: {
+        name: 'user_name',
+    },
+    transformPayload: payload => ({
+        ...payload,
+        user_name: payload.user_name.toUpperCase(),
+    })
+});
+...
+...
+...
+await updateUser.call();
+```
+In this example, the resource transforms the case of the user_name parameter in the paylod. Any `updateUser` request will be sent with upper case user name.
+
 
 ### Parse the Response
 
@@ -263,6 +285,13 @@ npm test
 
 ## Release History
 
+* 1.0.6
+    * Add support for transformPayload option
+* 1.0.5
+    * Add prettier and eslint
+    * Support default options
+* 1.0.4
+    * Update dependencies and fix potential security vulnerabilities
 * 1.0.3
     * Add support for setting and changing interpolation pattern
     * Bug fixes
