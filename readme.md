@@ -234,6 +234,25 @@ await updateUser.call();
 ```
 In this example, the resource transforms the case of the user_name parameter in the paylod. Any `updateUser` request will be sent with upper case user name.
 
+## Manipulate request headers
+
+`transformHeaders` option can be used to manipulated the headers right before calling the api. 
+```javascript
+import { createResource } from 'plain-api';
+
+const fetchUser = createResource('get', 'https://api.example.com/user', {
+    transformHeaders: headers => ({
+        ...headers,
+        Authorization: 'token',
+    })
+});
+...
+...
+...
+await updateUser.call();
+```
+Any `fetchUser` request will be sent with Authorization header.
+
 
 ### Parse the Response
 
@@ -285,8 +304,9 @@ npm test
 
 ## Release History
 
-* 1.0.6
+* 1.0.7
     * Add support for transformPayload option
+    * Add support for transformHeaders option
 * 1.0.5
     * Add prettier and eslint
     * Support default options

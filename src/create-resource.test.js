@@ -210,6 +210,25 @@ describe('Api Call Test', () => {
             payload: { a: 1, B: 2 },
             expectedArguments: ['http://example.com/some/api/', { params: { A: 1, B: 3, C: 4 } }],
         },
+        {
+            method: 'get',
+            name: 'should support transformHeaders option',
+            createResource: () =>
+                createResource('get', 'http://example.com/some/api/', {
+                    headersMap: {
+                        param: 'x-param',
+                    },
+                    transformHeaders: headers => ({
+                        ...headers,
+                        'x-another-header': 'anotherHeader',
+                    }),
+                }),
+            payload: { param: 'myParam', unused: 'unusedValue' },
+            expectedArguments: [
+                'http://example.com/some/api/',
+                { headers: { 'x-param': 'myParam', 'x-another-header': 'anotherHeader' } },
+            ],
+        },
     ].forEach(test => {
         it(test.name, async () => {
             const mock = jest

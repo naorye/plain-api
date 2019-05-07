@@ -3,11 +3,16 @@ import axios from 'axios';
 const defaultOptions = {
     interpolationPattern: /\{\{(\w+)\}\}/gi,
     transformPayload: p => p,
+    transformHeaders: h => h,
     inputMap: undefined,
     headersMap: undefined,
     withCredentials: false,
     parsers: [],
 };
+
+function isEmptyObject(obj) {
+    return Object.keys(obj).length === 0 && obj.constructor === Object;
+}
 
 function invokeParsers(parsers = [], body, isFailure, payload, options) {
     let parsersArr;
@@ -60,14 +65,14 @@ export function createResource(method, apiUrl, options = {}) {
                 {}
             );
         } else {
-            transformedPayload = undefined;
+            transformedPayload = {};
         }
         transformedPayload = transformPayload(transformedPayload);
-        return transformedPayload;
+        return isEmptyObject(transformedPayload) ? undefined : transformedPayload;
     }
 
     function getHeaders(payload) {
-        const { headersMap } = expandedOptions;
+        const { headersMap, transformHeaders } = expandedOptions;
         let headers;
         if (headersMap && payload) {
             headers = Object.keys(headersMap).reduce(
@@ -78,9 +83,10 @@ export function createResource(method, apiUrl, options = {}) {
                 {}
             );
         } else {
-            headers = undefined;
+            headers = {};
         }
-        return headers;
+        headers = transformHeaders(headers);
+        return isEmptyObject(headers) ? undefined : headers;
     }
 
     async function call(payload = undefined) {
