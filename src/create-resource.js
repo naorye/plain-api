@@ -19,6 +19,7 @@ function invokeParsers(parsers = [], body, isFailure, payload, options) {
     return parsedBody;
 }
 
+// TODO: Remove this method which is deprecated since createResourceFactory()
 export function setDefaultInterpolationPattern(interpolationPattern) {
     defaultOptions.interpolationPattern = interpolationPattern;
 }
