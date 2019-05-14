@@ -125,6 +125,9 @@ function createResourceFactory(factoryDefaults = {}) {
                     case 'put':
                         response = await axios.put(fullUrl, transformedPayload, axiosOptions);
                         break;
+                    case 'patch':
+                        response = await axios.patch(fullUrl, transformedPayload, axiosOptions);
+                        break;
                     default:
                         throw new Error(`Invalid method ${method}`);
                 }

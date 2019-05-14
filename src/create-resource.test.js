@@ -105,6 +105,40 @@ describe('Api Call Test', () => {
             expectedArguments: ['http://example.com/some/api/', { A: 1 }, {}],
         },
 
+        // PATCH
+        {
+            method: 'patch',
+            name: 'should perform simple PATCH request',
+            createResource: () => createResource('patch', 'http://example.com/some/api/'),
+            expectedArguments: ['http://example.com/some/api/', undefined, {}],
+        },
+        {
+            method: 'patch',
+            name: 'should perform PATCH request with params',
+            createResource: () =>
+                createResource('patch', 'http://example.com/some/api/', {
+                    inputMap: {
+                        a: 'A',
+                        b: 'B',
+                    },
+                }),
+            payload: { a: 1, b: 2 },
+            expectedArguments: ['http://example.com/some/api/', { A: 1, B: 2 }, {}],
+        },
+        {
+            method: 'patch',
+            name: 'should perform PUT request only with provided params defined in inputMap',
+            createResource: () =>
+                createResource('patch', 'http://example.com/some/api/', {
+                    inputMap: {
+                        a: 'A',
+                        b: 'B',
+                    },
+                }),
+            payload: { a: 1, c: 2 },
+            expectedArguments: ['http://example.com/some/api/', { A: 1 }, {}],
+        },
+
         // DELETE
         {
             method: 'delete',
