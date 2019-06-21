@@ -305,7 +305,7 @@ describe('Api Call Test', () => {
         const additionalParser = jest.fn(x => ({ ...x, additional: true }));
         const mock = jest
             .spyOn(axios, 'get')
-            .mockImplementation(() => ({ data: { status: 'success' } }));
+            .mockImplementation(() => ({ data: { status: 'success' }, status: 200 }));
 
         const transformPayload = payload => ({ ...payload, priority: 'high' });
         const transformHeaders = headers => ({ ...headers, token: '1234' });
@@ -340,6 +340,7 @@ describe('Api Call Test', () => {
                 withCredentials: true,
                 parsers: [defaultParser, additionalParser],
             },
+            200,
         ];
         expect(defaultParser).toBeCalledWith({ status: 'success' }, ...expectedParserArgs);
         expect(additionalParser).toBeCalledWith(

@@ -304,6 +304,12 @@ npm test
 
 ## Release History
 
+* 1.0.10
+    * Pass status code to parsers
+* 1.0.9
+    * Support PATCH request
+* 1.0.8
+    * Add support for createResourceFactory() to create resource factory with predefined options
 * 1.0.7
     * Add support for transformPayload option
     * Add support for transformHeaders option

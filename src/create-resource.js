@@ -4,7 +4,7 @@ function isEmptyObject(obj) {
     return Object.keys(obj).length === 0 && obj.constructor === Object;
 }
 
-function invokeParsers(parsers = [], body, isFailure, payload, options) {
+function invokeParsers(parsers = [], body, isFailure, payload, options, statusCode) {
     let parsersArr;
     if (!Array.isArray(parsers)) {
         parsersArr = [parsers];
@@ -13,7 +13,7 @@ function invokeParsers(parsers = [], body, isFailure, payload, options) {
     }
     const originalBody = Object.freeze(body);
     const parsedBody = parsersArr.reduce(
-        (interBody, parser) => parser(interBody, isFailure, payload, options),
+        (interBody, parser) => parser(interBody, isFailure, payload, options, statusCode),
         originalBody
     );
     return parsedBody;
@@ -117,6 +117,7 @@ function createResourceFactory(factoryDefaults = {}) {
 
             let body;
             let isFailure = false;
+            let statusCode;
             try {
                 let response;
                 switch (method.toLowerCase()) {
@@ -142,16 +143,18 @@ function createResourceFactory(factoryDefaults = {}) {
                         throw new Error(`Invalid method ${method}`);
                 }
                 body = response.data;
+                statusCode = response.status;
             } catch (err) {
                 isFailure = true;
                 if (err.response) {
                     body = err.response.data;
+                    statusCode = err.response.status;
                 } else {
                     throw err;
                 }
             }
 
-            return invokeParsers(parsers, body, isFailure, payload, mergedOptions);
+            return invokeParsers(parsers, body, isFailure, payload, mergedOptions, statusCode);
         }
 
         return {
