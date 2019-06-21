@@ -1,5 +1,9 @@
 import axios from 'axios';
-import { createResource, setDefaultInterpolationPattern } from './create-resource';
+import {
+    createResource,
+    setDefaultInterpolationPattern,
+    createResourceFactory,
+} from './create-resource';
 
 describe('Api Call Test', () => {
     [
@@ -292,5 +296,63 @@ describe('Api Call Test', () => {
         }
 
         expect(errorMessage).toEqual('Invalid method bla');
+    });
+
+    it('should support createResourceFactory with customized factory options', async () => {
+        let errorMessage;
+
+        const defaultParser = jest.fn(x => ({ ...x, default: true }));
+        const additionalParser = jest.fn(x => ({ ...x, additional: true }));
+        const mock = jest
+            .spyOn(axios, 'get')
+            .mockImplementation(() => ({ data: { status: 'success' } }));
+
+        const transformPayload = payload => ({ ...payload, priority: 'high' });
+        const transformHeaders = headers => ({ ...headers, token: '1234' });
+        const createCustomResource = createResourceFactory({
+            interpolationPattern: /\[\[(\w+)\]\]/gi,
+            transformPayload,
+            transformHeaders,
+            withCredentials: true,
+            parsers: [defaultParser],
+        });
+
+        const resource = createCustomResource('get', 'http://example.com/[[module]]/api/', {
+            inputMap: {},
+            parsers: [additionalParser],
+        });
+
+        const result = await resource.call({ module: 'some' });
+
+        expect(result).toEqual({ status: 'success', default: true, additional: true });
+        expect(defaultParser.mock.calls.length).toBe(1);
+        expect(additionalParser.mock.calls.length).toBe(1);
+
+        const expectedParserArgs = [
+            false,
+            { module: 'some' },
+            {
+                interpolationPattern: /\[\[(\w+)\]\]/gi,
+                transformPayload: transformPayload,
+                transformHeaders: transformHeaders,
+                inputMap: {},
+                headersMap: undefined,
+                withCredentials: true,
+                parsers: [defaultParser, additionalParser],
+            },
+        ];
+        expect(defaultParser).toBeCalledWith({ status: 'success' }, ...expectedParserArgs);
+        expect(additionalParser).toBeCalledWith(
+            { status: 'success', default: true },
+            ...expectedParserArgs
+        );
+
+        expect(mock).toHaveBeenCalledWith('http://example.com/some/api/', {
+            headers: { token: '1234' },
+            params: { priority: 'high' },
+            withCredentials: true,
+        });
+
+        mock.mockRestore();
     });
 });

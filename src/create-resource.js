@@ -34,12 +34,22 @@ const defaultOptions = {
     parsers: [],
 };
 
+function mergeOptions(...args) {
+    return args.reduce((merged, options) => {
+        return {
+            ...merged,
+            ...options,
+            parsers: options.parsers ? [...merged.parsers, ...options.parsers] : merged.parsers,
+        };
+    }, defaultOptions);
+}
+
 function createResourceFactory(factoryDefaults = {}) {
     return function createResource(method, apiUrl, options = {}) {
-        const expandedOptions = { ...defaultOptions, ...factoryDefaults, ...options };
+        const mergedOptions = mergeOptions(factoryDefaults, options);
 
         function buildUrl(urlParams = {}) {
-            const { interpolationPattern } = expandedOptions;
+            const { interpolationPattern } = mergedOptions;
             return apiUrl.replace(interpolationPattern, (match, p1) =>
                 Object.prototype.hasOwnProperty.call(urlParams, p1)
                     ? encodeURIComponent(urlParams[p1])
@@ -51,12 +61,12 @@ function createResourceFactory(factoryDefaults = {}) {
             return {
                 apiUrl,
                 method,
-                options: expandedOptions,
+                options: mergedOptions,
             };
         }
 
         function getTransformedPayload(payload) {
-            const { inputMap, transformPayload } = expandedOptions;
+            const { inputMap, transformPayload } = mergedOptions;
             let transformedPayload;
             if (inputMap && payload) {
                 transformedPayload = Object.keys(inputMap).reduce(
@@ -74,7 +84,7 @@ function createResourceFactory(factoryDefaults = {}) {
         }
 
         function getHeaders(payload) {
-            const { headersMap, transformHeaders } = expandedOptions;
+            const { headersMap, transformHeaders } = mergedOptions;
             let headers;
             if (headersMap && payload) {
                 headers = Object.keys(headersMap).reduce(
@@ -96,7 +106,7 @@ function createResourceFactory(factoryDefaults = {}) {
             const transformedPayload = getTransformedPayload(payload);
             const headers = getHeaders(payload);
 
-            const { withCredentials, parsers } = expandedOptions;
+            const { withCredentials, parsers } = mergedOptions;
             const axiosOptions = {};
             if (headers) {
                 axiosOptions.headers = headers;
@@ -141,7 +151,7 @@ function createResourceFactory(factoryDefaults = {}) {
                 }
             }
 
-            return invokeParsers(parsers, body, isFailure, payload, expandedOptions);
+            return invokeParsers(parsers, body, isFailure, payload, mergedOptions);
         }
 
         return {
